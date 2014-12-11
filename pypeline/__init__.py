@@ -10,3 +10,4 @@
 
 from pypeline.version import __version__  # NOQA
 from pypeline.pipeline import Pipeline  # NOQA
+from pypeline.action import Action  # NOQA

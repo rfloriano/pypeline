@@ -12,6 +12,15 @@ class Pipeline(object):
         self.after_backward = (lambda act, ctx: None) if after_backward is None else after_backward
         self.on_failed = (lambda act, ctx, e: None) if on_failed is None else on_failed
 
+    def get_titles(self):
+        return [a.name for a in self.action_list]
+
+    def get_statuses(self):
+        return [a.status for a in self.action_list]
+
+    def actions_to_dict(self):
+        return [a.to_dict() for a in self.action_list]
+
     def execute(self, context=None):
         if context is None:
             context = {}
@@ -20,19 +29,25 @@ class Pipeline(object):
             self.before_action(action, context, failed)
             self._executed.insert(0, action)
             try:
+                action.mark_as_doing()
                 self.before_forward(action, context)
                 action.forward(context)
                 self.after_forward(action, context)
+                action.mark_as_done()
             except Exception, e:
                 failed = True
+                action.mark_as_failed()
                 self.on_failed(action, context, e)
                 break
             self.after_action(action, context, failed)
 
         if failed:
             for action in self._executed:
+                action.mark_as_undoing()
                 self.before_action(action, context, failed)
                 self.before_backward(action, context)
                 action.backward(e, context)
+                action.mark_as_undone()
                 self.after_backward(action, context)
                 self.after_action(action, context, failed)
+        return not failed

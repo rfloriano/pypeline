@@ -15,3 +15,10 @@ class ActionTestCase(TestCase):
         expect(act.name).to_equal("My super action")
         expect(act.forward({})).to_equal(None)
         expect(act.backward(None, {})).to_equal(None)
+
+    def test_to_dict_method(self):
+        act = MyAction()
+        expect(act.to_dict()).to_equal({
+            'name': act.name,
+            'status': act.status,
+        })

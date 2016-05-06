@@ -73,3 +73,33 @@ class PipelineTestCase(TestCase):
         expect(second.backward.call_count).to_equal(1)
         expect(boom.backward.call_count).to_equal(1)
         expect(third.backward.call_count).to_equal(0)
+
+    def test_execute_with_none_context(self):
+        first = FirstAction()
+        second = SecondAction()
+        pipe = Pipeline([first, second])
+        expect(pipe.execute({})).to_equal(True)
+
+    def test_get_titles(self):
+        first = FirstAction()
+        second = SecondAction()
+        pipe = Pipeline([first, second])
+        expect(pipe.get_titles()).to_equal([first.name, second.name])
+
+    def test_get_statuses(self):
+        first = FirstAction()
+        second = SecondAction()
+        pipe = Pipeline([first, second])
+        expect(pipe.get_statuses()).to_equal([first.status, second.status])
+
+    def test_actions_to_dict(self):
+        first = FirstAction()
+        second = SecondAction()
+        pipe = Pipeline([first, second])
+        expect(pipe.actions_to_dict()).to_equal([{
+            'name': first.name,
+            'status': first.status,
+        }, {
+            'name': second.name,
+            'status': second.status,
+        }])

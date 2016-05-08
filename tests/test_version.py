@@ -16,4 +16,4 @@ from pypeline import __version__
 
 class VersionTestCase(TestCase):
     def test_has_proper_version(self):
-        expect(__version__).to_equal("0.1.0")
+        expect(__version__).to_equal("0.2.0")

@@ -26,19 +26,20 @@ class Pipeline(object):
             context = {}
         failed = False
         for action in self.action_list:
+            action.mark_as_doing()
             self.before_action(action, context, failed)
             self._executed.insert(0, action)
             try:
-                action.mark_as_doing()
                 self.before_forward(action, context)
                 action.forward(context)
                 self.after_forward(action, context)
-                action.mark_as_done()
             except Exception, e:
                 failed = True
                 action.mark_as_failed(e)
                 self.on_failed(action, context, e)
                 break
+            else:
+                action.mark_as_done()
             self.after_action(action, context, failed)
 
         if failed:

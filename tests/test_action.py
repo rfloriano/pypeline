@@ -21,5 +21,8 @@ class ActionTestCase(TestCase):
         expect(act.to_dict()).to_equal({
             'name': act.name,
             'status': act.status,
-            'error': '',
+            'error': {
+                'msg': None,
+                'traceback': None,
+            },
         })

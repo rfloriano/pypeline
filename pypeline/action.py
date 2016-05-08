@@ -1,3 +1,5 @@
+import traceback
+
 STATUSES = ['queued', 'doing', 'done', 'undoing', 'undone', 'failed']
 
 
@@ -23,13 +25,18 @@ class Action(object):
         self.error = e
 
     def to_dict(self):
-        error_str = ''
+        error_str = None
+        error_traceback = None
         if self.error:
             error_str = str(self.error)
+            error_traceback = traceback.format_exc(self.error)
         return {
             'name': self.name,
             'status': self.status,
-            'error': error_str,
+            'error': {
+                'msg': error_str,
+                'traceback': error_traceback,
+            },
         }
 
     def backward(self, err, context):

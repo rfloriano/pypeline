@@ -99,9 +99,15 @@ class PipelineTestCase(TestCase):
         expect(pipe.actions_to_dict()).to_equal([{
             'name': first.name,
             'status': first.status,
-            'error': '',
+            'error': {
+                'msg': None,
+                'traceback': None,
+            },
         }, {
             'name': second.name,
             'status': second.status,
-            'error': '',
+            'error': {
+                'msg': None,
+                'traceback': None,
+            },
         }])

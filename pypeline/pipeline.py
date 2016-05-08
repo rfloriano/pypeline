@@ -36,7 +36,7 @@ class Pipeline(object):
                 action.mark_as_done()
             except Exception, e:
                 failed = True
-                action.mark_as_failed()
+                action.mark_as_failed(e)
                 self.on_failed(action, context, e)
                 break
             self.after_action(action, context, failed)
@@ -50,4 +50,4 @@ class Pipeline(object):
                 action.mark_as_undone()
                 self.after_backward(action, context)
                 self.after_action(action, context, failed)
-        return not failed
+        return self.actions_to_dict()

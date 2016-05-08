@@ -78,7 +78,7 @@ class PipelineTestCase(TestCase):
         first = FirstAction()
         second = SecondAction()
         pipe = Pipeline([first, second])
-        expect(pipe.execute({})).to_equal(True)
+        expect(pipe.execute({})).to_equal(pipe.actions_to_dict())
 
     def test_get_titles(self):
         first = FirstAction()
@@ -99,7 +99,9 @@ class PipelineTestCase(TestCase):
         expect(pipe.actions_to_dict()).to_equal([{
             'name': first.name,
             'status': first.status,
+            'error': '',
         }, {
             'name': second.name,
             'status': second.status,
+            'error': '',
         }])

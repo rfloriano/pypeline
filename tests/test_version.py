@@ -11,7 +11,7 @@
 from unittest import TestCase
 from preggy import expect
 
-from pypeline import __version__
+from exec_pypeline import __version__
 
 
 class VersionTestCase(TestCase):

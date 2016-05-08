@@ -1,7 +1,7 @@
 from unittest import TestCase
 from preggy import expect
 
-from pypeline.action import Action
+from exec_pypeline.action import Action
 
 
 class MyAction(Action):

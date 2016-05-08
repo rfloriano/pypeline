@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# This file is part of pypeline.
+# This file is part of exec-pypeline.
 # https://github.com/rfloriano/pypeline
 
 # Licensed under the MIT license:
@@ -10,7 +10,7 @@
 
 
 from setuptools import setup, find_packages
-from pypeline import __version__
+from exec_pypeline import __version__
 
 tests_require = [
     'mock',
@@ -25,7 +25,7 @@ tests_require = [
 ]
 
 setup(
-    name='pypeline',
+    name='exec-pypeline',
     version=__version__,
     description='an incredible python package',
     long_description='''

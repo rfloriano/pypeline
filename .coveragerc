@@ -3,7 +3,7 @@ omit =
     *tests.py
 branch = True
 source =
-    pypeline
+    exec_pypeline
 
 [report]
 exclude_lines =

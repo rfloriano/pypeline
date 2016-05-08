@@ -2,8 +2,8 @@ from mock import Mock
 from unittest import TestCase
 from preggy import expect
 
-from pypeline import Pipeline
-from pypeline.action import Action
+from exec_pypeline import Pipeline
+from exec_pypeline.action import Action
 
 
 class FirstAction(Action):

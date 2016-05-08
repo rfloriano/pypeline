@@ -31,7 +31,7 @@ class Pipeline(object):
             self._executed.insert(0, action)
             try:
                 self.before_forward(action, context)
-                action.forward(context)
+                action.set_outcome(action.forward(context))
                 self.after_forward(action, context)
             except Exception, e:
                 failed = True

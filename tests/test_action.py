@@ -25,4 +25,5 @@ class ActionTestCase(TestCase):
                 'msg': None,
                 'traceback': None,
             },
+            'outcome': None,
         })

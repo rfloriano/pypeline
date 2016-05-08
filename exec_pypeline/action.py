@@ -7,6 +7,7 @@ class Action(object):
     name = 'Action'
     status = STATUSES[0]
     error = None
+    outcome = None
 
     def mark_as_doing(self):
         self.status = STATUSES[1]
@@ -24,6 +25,9 @@ class Action(object):
         self.status = STATUSES[5]
         self.error = e
 
+    def set_outcome(self, outcome):
+        self.outcome = outcome
+
     def to_dict(self):
         error_str = None
         error_traceback = None
@@ -37,6 +41,7 @@ class Action(object):
                 'msg': error_str,
                 'traceback': error_traceback,
             },
+            'outcome': self.outcome,
         }
 
     def backward(self, err, context):

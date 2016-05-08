@@ -103,6 +103,7 @@ class PipelineTestCase(TestCase):
                 'msg': None,
                 'traceback': None,
             },
+            'outcome': None,
         }, {
             'name': second.name,
             'status': second.status,
@@ -110,4 +111,5 @@ class PipelineTestCase(TestCase):
                 'msg': None,
                 'traceback': None,
             },
+            'outcome': None,
         }])

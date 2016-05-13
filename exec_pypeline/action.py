@@ -45,7 +45,9 @@ class Action(object):
         }
 
     def backward(self, err, context):
-        pass
+        raise NotImplementedError(
+            'backward method need to be specified for an Action')
 
     def forward(self, context):
-        pass
+        raise NotImplementedError(
+            'forward method need to be specified for an Action')

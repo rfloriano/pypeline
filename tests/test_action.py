@@ -1,10 +1,10 @@
 from unittest import TestCase
 from preggy import expect
 
-from exec_pypeline.action import Action
+from .pass_action import PassAction
 
 
-class MyAction(Action):
+class MyAction(PassAction):
     name = "My super action"
 
 

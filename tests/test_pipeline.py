@@ -3,22 +3,22 @@ from unittest import TestCase
 from preggy import expect
 
 from exec_pypeline import Pipeline
-from exec_pypeline.action import Action
+from .pass_action import PassAction
 
 
-class FirstAction(Action):
+class FirstAction(PassAction):
     name = "My first action"
 
 
-class SecondAction(Action):
+class SecondAction(PassAction):
     name = "My second action"
 
 
-class ThirdAction(Action):
+class ThirdAction(PassAction):
     name = "My third action"
 
 
-class BoomAction(Action):
+class BoomAction(PassAction):
     name = "My boom action"
 
     def forward(self, context):

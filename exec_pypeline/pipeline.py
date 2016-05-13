@@ -27,31 +27,32 @@ class Pipeline(object):
     def execute(self, context=None):
         if context is None:
             context = {}
-        failed = False
+        exception = None
         for action in self.action_list:
-            action.mark_as_doing()
-            self.before_action(action, context, failed)
             self._executed.insert(0, action)
+            action.mark_as_doing()
             try:
+                self.before_action(action, context, exception)
                 self.before_forward(action, context)
                 action.set_outcome(action.forward(context))
                 self.after_forward(action, context)
             except Exception, e:
-                failed = True
+                exception = e
                 action.mark_as_failed(e)
                 self.on_failed(action, context, e)
+                self.after_action(action, context, exception)
                 break
             else:
                 action.mark_as_done()
-            self.after_action(action, context, failed)
+            self.after_action(action, context, exception)
 
-        if failed:
+        if exception:
             for action in self._executed:
                 action.mark_as_undoing()
-                self.before_action(action, context, failed)
+                self.before_action(action, context, exception)
                 self.before_backward(action, context)
                 action.backward(e, context)
                 action.mark_as_undone()
                 self.after_backward(action, context)
-                self.after_action(action, context, failed)
+                self.after_action(action, context, exception)
         return self.actions_to_dict()

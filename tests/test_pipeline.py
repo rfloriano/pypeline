@@ -113,3 +113,30 @@ class PipelineTestCase(TestCase):
             },
             'outcome': None,
         }])
+
+
+class PipelineActionListInClassTestCase(TestCase):
+    def test_pipeline(self):
+        first = FirstAction()
+        second = SecondAction()
+
+        class TestPipe(Pipeline):
+            action_list = [first, second]
+
+        expect(TestPipe().execute()).to_equal([{
+            'name': first.name,
+            'status': first.status,
+            'error': {
+                'msg': None,
+                'traceback': None,
+            },
+            'outcome': None,
+        }, {
+            'name': second.name,
+            'status': second.status,
+            'error': {
+                'msg': None,
+                'traceback': None,
+            },
+            'outcome': None,
+        }])

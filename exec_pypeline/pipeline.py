@@ -1,11 +1,14 @@
 class Pipeline(object):
+    action_list = None
 
-    def __init__(self, action_list, before_action=None, after_action=None, before_forward=None, after_forward=None,
+    def __init__(self, action_list=None, before_action=None, after_action=None, before_forward=None, after_forward=None,
                  before_backward=None, after_backward=None, on_failed=None):
-        self._executed = []
+        if action_list is None:
+            action_list = self.action_list
         self.action_list = action_list
-        self.before_action = (lambda act, ctx, failed: None) if before_action is None else before_action
-        self.after_action = (lambda act, ctx, failed: None) if after_action is None else after_action
+        self._executed = []
+        self.before_action = (lambda act, ctx, exp: None) if before_action is None else before_action
+        self.after_action = (lambda act, ctx, exp: None) if after_action is None else after_action
         self.before_forward = (lambda act, ctx: None) if before_forward is None else before_forward
         self.after_forward = (lambda act, ctx: None) if after_forward is None else after_forward
         self.before_backward = (lambda act, ctx: None) if before_backward is None else before_backward

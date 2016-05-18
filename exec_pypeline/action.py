@@ -1,4 +1,5 @@
 import traceback
+import uuid
 
 STATUSES = ['queued', 'doing', 'done', 'undoing', 'undone', 'failed']
 
@@ -8,6 +9,10 @@ class Action(object):
     status = STATUSES[0]
     error = None
     outcome = None
+
+    def __init__(self, *args, **kwargs):
+        super(Action, self).__init__(*args, **kwargs)
+        self.id = str(uuid.uuid4())
 
     def mark_as_doing(self):
         self.status = STATUSES[1]
@@ -35,6 +40,7 @@ class Action(object):
             error_str = str(self.error)
             error_traceback = traceback.format_exc(self.error)
         return {
+            'id': self.id,
             'name': self.name,
             'status': self.status,
             'error': {

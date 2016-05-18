@@ -19,6 +19,7 @@ class ActionTestCase(TestCase):
     def test_to_dict_method(self):
         act = MyAction()
         expect(act.to_dict()).to_equal({
+            'id': act.id,
             'name': act.name,
             'status': act.status,
             'error': {

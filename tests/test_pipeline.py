@@ -97,6 +97,7 @@ class PipelineTestCase(TestCase):
         second = SecondAction()
         pipe = Pipeline([first, second])
         expect(pipe.actions_to_dict()).to_equal([{
+            'id': first.id,
             'name': first.name,
             'status': first.status,
             'error': {
@@ -105,6 +106,7 @@ class PipelineTestCase(TestCase):
             },
             'outcome': None,
         }, {
+            'id': second.id,
             'name': second.name,
             'status': second.status,
             'error': {
@@ -124,6 +126,7 @@ class PipelineActionListInClassTestCase(TestCase):
             action_list = [first, second]
 
         expect(TestPipe().execute()).to_equal([{
+            'id': first.id,
             'name': first.name,
             'status': first.status,
             'error': {
@@ -132,6 +135,7 @@ class PipelineActionListInClassTestCase(TestCase):
             },
             'outcome': None,
         }, {
+            'id': second.id,
             'name': second.name,
             'status': second.status,
             'error': {

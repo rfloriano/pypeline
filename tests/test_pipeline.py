@@ -74,7 +74,7 @@ class PipelineTestCase(TestCase):
         expect(boom.backward.call_count).to_equal(1)
         expect(third.backward.call_count).to_equal(0)
 
-    def test_execute_with_none_context(self):
+    def test_execute_with_empty_context(self):
         first = FirstAction()
         second = SecondAction()
         pipe = Pipeline([first, second])
@@ -103,6 +103,7 @@ class PipelineTestCase(TestCase):
             'error': {
                 'msg': None,
                 'traceback': None,
+                'class': None,
             },
             'outcome': None,
         }, {
@@ -112,6 +113,7 @@ class PipelineTestCase(TestCase):
             'error': {
                 'msg': None,
                 'traceback': None,
+                'class': None,
             },
             'outcome': None,
         }])
@@ -125,22 +127,83 @@ class PipelineActionListInClassTestCase(TestCase):
         class TestPipe(Pipeline):
             action_list = [first, second]
 
-        expect(TestPipe().execute()).to_equal([{
-            'id': first.id,
-            'name': first.name,
-            'status': first.status,
-            'error': {
-                'msg': None,
-                'traceback': None,
-            },
-            'outcome': None,
-        }, {
-            'id': second.id,
-            'name': second.name,
-            'status': second.status,
-            'error': {
-                'msg': None,
-                'traceback': None,
-            },
-            'outcome': None,
-        }])
+        expect(TestPipe().execute()).to_equal([first.to_dict(), second.to_dict()])
+
+
+class PipelineIterTestCase(TestCase):
+    def test_my_pipe(self):
+        first = FirstAction()
+        second = SecondAction()
+        third = ThirdAction()
+        first.forward = Mock()
+        second.forward = Mock()
+        third.forward = Mock()
+        first.backward = Mock()
+        second.backward = Mock()
+        third.backward = Mock()
+        action_list = [first, second, third]
+        pipe = Pipeline(action_list)
+        expect(pipe.action_list).to_equal(action_list)
+
+        gen = pipe.iter_execute()
+        expect(gen).Not.to_be_an_error()
+
+        expect(first.forward.call_count).to_equal(0)
+        expect(second.forward.call_count).to_equal(0)
+        expect(third.forward.call_count).to_equal(0)
+        expect(first.backward.call_count).to_equal(0)
+        expect(second.backward.call_count).to_equal(0)
+        expect(third.backward.call_count).to_equal(0)
+
+        for i, a in enumerate(gen):
+            index = i + 1
+            expect(first.forward.call_count).to_equal(int(bool(index / 1)))
+            expect(second.forward.call_count).to_equal(int(bool(index / 2)))
+            expect(third.forward.call_count).to_equal(int(bool(index / 3)))
+            expect(first.backward.call_count).to_equal(0)
+            expect(second.backward.call_count).to_equal(0)
+            expect(third.backward.call_count).to_equal(0)
+
+    def test_my_boom_pipe(self):
+        first = FirstAction()
+        second = SecondAction()
+        boom = BoomAction()
+        third = ThirdAction()
+        first.forward = Mock()
+        second.forward = Mock()
+        third.forward = Mock()
+        first.backward = Mock()
+        second.backward = Mock()
+        boom.backward = Mock()
+        third.backward = Mock()
+        action_list = [first, second, boom, third]
+        pipe = Pipeline(action_list)
+        expect(pipe.action_list).to_equal(action_list)
+        gen = pipe.iter_execute()
+        expect(gen).Not.to_be_an_error()
+
+        expect(first.forward.call_count).to_equal(0)
+        expect(second.forward.call_count).to_equal(0)
+        expect(third.forward.call_count).to_equal(0)
+        expect(first.backward.call_count).to_equal(0)
+        expect(second.backward.call_count).to_equal(0)
+        expect(third.backward.call_count).to_equal(0)
+
+        for i, a in enumerate(gen):
+            index = i + 1
+            expect(first.forward.call_count).to_equal(int(bool(index / 1)))
+            expect(second.forward.call_count).to_equal(int(bool(index / 2)))
+            expect(third.forward.call_count).to_equal(0)
+            expect(boom.backward.call_count).to_equal(int(bool(index / 3)))
+            expect(second.backward.call_count).to_equal(int(bool(index / 4)))
+            expect(first.backward.call_count).to_equal(int(bool(index / 5)))
+            expect(third.backward.call_count).to_equal(0)
+
+    def test_execute_with_empty_context(self):
+        first = FirstAction()
+        second = SecondAction()
+        pipe = Pipeline([first, second])
+        result = []
+        for a in pipe.iter_execute({}):
+            result.append(a)
+        expect(result).to_equal(pipe.action_list)

@@ -25,6 +25,7 @@ class ActionTestCase(TestCase):
             'error': {
                 'msg': None,
                 'traceback': None,
+                'class': None,
             },
             'outcome': None,
         })

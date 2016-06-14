@@ -10,9 +10,11 @@ class Action(object):
     error = None
     outcome = None
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, id=uuid.uuid4, *args, **kwargs):
         super(Action, self).__init__(*args, **kwargs)
-        self.id = str(uuid.uuid4())
+        if callable(id):
+            id = id()
+        self.id = str(id)
 
     def mark_as_doing(self):
         self.status = STATUSES[1]
@@ -36,14 +38,17 @@ class Action(object):
     def to_dict(self):
         error_str = None
         error_traceback = None
+        error_cls = None
         if self.error:
             error_str = str(self.error)
             error_traceback = traceback.format_exc(self.error)
+            error_cls = self.error.__class__.__name__
         return {
             'id': self.id,
             'name': self.name,
             'status': self.status,
             'error': {
+                'class': error_cls,
                 'msg': error_str,
                 'traceback': error_traceback,
             },

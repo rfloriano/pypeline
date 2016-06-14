@@ -118,6 +118,13 @@ class PipelineTestCase(TestCase):
             'outcome': None,
         }])
 
+    def test_from_dict_method(self):
+        first = FirstAction()
+        second = SecondAction()
+        pipe = Pipeline([first, second])
+        pipe2 = Pipeline.from_dict(pipe.actions_to_dict())
+        expect(pipe.actions_to_dict()).to_equal(pipe2.actions_to_dict())
+
 
 class PipelineActionListInClassTestCase(TestCase):
     def test_pipeline(self):

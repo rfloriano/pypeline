@@ -16,6 +16,18 @@ class Action(object):
             id = id()
         self.id = str(id)
 
+    @classmethod
+    def from_dict(cls, action_dict):
+        action = cls(action_dict.get('id', uuid.uuid4))
+        action.name = action_dict.get('name', cls.name)
+        action.status = action_dict.get('status', cls.status)
+        action.outcome = action_dict.get('outcome', cls.outcome)
+        err = action_dict.get('error', {})
+        action.error = cls.error
+        if err.get('class'):
+            action.error = eval(err['class'])(err['msg'])
+        return action
+
     def mark_as_doing(self):
         self.status = STATUSES[1]
 

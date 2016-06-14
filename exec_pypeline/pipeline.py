@@ -1,3 +1,6 @@
+import exec_pypeline.action as action_lib
+
+
 class Pipeline(object):
     action_list = None
 
@@ -14,6 +17,13 @@ class Pipeline(object):
         self.before_backward = (lambda act, ctx: None) if before_backward is None else before_backward
         self.after_backward = (lambda act, ctx: None) if after_backward is None else after_backward
         self.on_failed = (lambda act, ctx, e: None) if on_failed is None else on_failed
+
+    @classmethod
+    def from_dict(cls, pipe_list, action_cls=action_lib.Action):
+        action_list = []
+        for action in pipe_list:
+            action_list.append(action_cls.from_dict(action))
+        return cls(action_list=action_list)
 
     def get_titles(self):
         return [a.name for a in self.action_list]

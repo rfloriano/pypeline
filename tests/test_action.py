@@ -1,6 +1,8 @@
 from unittest import TestCase
 from preggy import expect
 
+from exec_pypeline.action import Action
+
 from .pass_action import PassAction
 
 
@@ -29,3 +31,14 @@ class ActionTestCase(TestCase):
             },
             'outcome': None,
         })
+
+    def test_from_dict_method(self):
+        first = MyAction()
+        second = Action.from_dict(first.to_dict())
+        expect(second.to_dict()).to_equal(first.to_dict())
+
+    def test_from_dict_method_with_error(self):
+        first = MyAction()
+        first.error = RuntimeError('foo')
+        second = Action.from_dict(first.to_dict())
+        expect(second.to_dict()).to_equal(first.to_dict())

@@ -15,6 +15,7 @@ from exec_pypeline import __version__
 tests_require = [
     'mock',
     'nose',
+    'nose-focus',
     'coverage',
     'yanc',
     'preggy',

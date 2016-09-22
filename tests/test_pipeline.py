@@ -132,7 +132,9 @@ class PipelineActionListInClassTestCase(TestCase):
         second = SecondAction()
 
         class TestPipe(Pipeline):
-            action_list = [first, second]
+            def __init__(self):
+                action_list = [first, second]
+                super(TestPipe, self).__init__(action_list=action_list)
 
         expect(TestPipe().execute()).to_equal([first.to_dict(), second.to_dict()])
 

@@ -1,14 +1,13 @@
+# -*- encoding: utf-8 -*-
+
 import exec_pypeline.action as action_lib
 
 
 class Pipeline(object):
-    action_list = None
 
     def __init__(self, action_list=None, before_action=None, after_action=None, before_forward=None, after_forward=None,
                  before_backward=None, after_backward=None, on_failed=None):
-        if action_list is None:
-            action_list = self.action_list
-        self.action_list = action_list
+        self.action_list = action_list or []
         self._executed = []
         self.before_action = (lambda act, ctx, exp: None) if before_action is None else before_action
         self.after_action = (lambda act, ctx, exp: None) if after_action is None else after_action
@@ -20,6 +19,7 @@ class Pipeline(object):
 
     @classmethod
     def from_dict(cls, pipe_list, action_cls=action_lib.Action):
+        pipe_list = pipe_list or []
         action_list = []
         for action in pipe_list:
             action_list.append(action_cls.from_dict(action))

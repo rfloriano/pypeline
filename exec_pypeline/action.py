@@ -52,9 +52,10 @@ class Action(object):
         error_traceback = None
         error_cls = None
         if self.error:
-            error_str = str(self.error)
+            error_str = unicode(self.error) if isinstance(self.error.message, unicode) else str(self.error)
             error_traceback = traceback.format_exc(self.error)
             error_cls = self.error.__class__.__name__
+
         return {
             'id': self.id,
             'name': self.name,

@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+import traceback
 from unittest import TestCase
 from preggy import expect
 
@@ -8,6 +11,10 @@ from .pass_action import PassAction
 
 class MyAction(PassAction):
     name = "My super action"
+
+
+class MyUnicodeErrorAction(PassAction):
+    pass
 
 
 class ActionTestCase(TestCase):
@@ -28,6 +35,30 @@ class ActionTestCase(TestCase):
                 'msg': None,
                 'traceback': None,
                 'class': None,
+            },
+            'outcome': None,
+        })
+
+    def test_to_dict_encodes_correctly_unicode_exception_messages(self):
+        act = MyUnicodeErrorAction()
+        exception_msg = u'opá'
+        exception_class = Exception
+
+        try:
+            raise exception_class(exception_msg)
+        except exception_class, e:
+            error = e
+
+        act.error = error
+
+        expect(act.to_dict()).to_equal({
+            'id': act.id,
+            'name': act.name,
+            'status': act.status,
+            'error': {
+                'msg': exception_msg,
+                'traceback': traceback.format_exc(error),
+                'class': error.__class__.__name__,
             },
             'outcome': None,
         })

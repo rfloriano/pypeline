@@ -6,7 +6,7 @@ import exec_pypeline.action as action_lib
 class Pipeline(object):
 
     def __init__(self, action_list=None, before_action=None, after_action=None, before_forward=None, after_forward=None,
-                 before_backward=None, after_backward=None, on_failed=None):
+                 before_backward=None, after_backward=None, on_failed=None, recovery=None):
         self.action_list = action_list or []
         self._executed = []
         self.before_action = (lambda act, ctx, exp: None) if before_action is None else before_action
@@ -16,6 +16,7 @@ class Pipeline(object):
         self.before_backward = (lambda act, ctx: None) if before_backward is None else before_backward
         self.after_backward = (lambda act, ctx: None) if after_backward is None else after_backward
         self.on_failed = (lambda act, ctx, e: None) if on_failed is None else on_failed
+        self.recovery = (lambda ctx, e: None) if recovery is None else recovery
 
     @classmethod
     def from_dict(cls, pipe_list, action_cls=action_lib.Action):
@@ -75,6 +76,8 @@ class Pipeline(object):
         if exception:
             for action in self._executed:
                 self.backward_action(action, context, exception)
+            if self.recovery:
+                self.recovery(context)
         return self.actions_to_dict()
 
     def iter_execute(self, context=None):

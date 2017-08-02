@@ -48,7 +48,7 @@ class Pipeline(object):
             action.mark_as_failed(e)
             self.on_failed(action, context, e)
             self.after_action(action, context, exception)
-            raise e
+            raise
         else:
             action.mark_as_done()
         self.after_action(action, context, exception)

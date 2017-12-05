@@ -59,9 +59,10 @@ class PipelineTestCase(TestCase):
         first.backward = Mock()
         second.backward = Mock()
         boom.backward = Mock()
+        pipe_recovery = Mock()
         third.backward = Mock()
         action_list = [first, second, boom, third]
-        pipe = Pipeline(action_list)
+        pipe = Pipeline(action_list, recovery=pipe_recovery)
         expect(pipe.action_list).to_equal(action_list)
         expect(pipe.execute()).Not.to_be_an_error()
 
@@ -73,6 +74,8 @@ class PipelineTestCase(TestCase):
         expect(second.backward.call_count).to_equal(1)
         expect(boom.backward.call_count).to_equal(1)
         expect(third.backward.call_count).to_equal(0)
+
+        expect(pipe.recovery.call_count).to_equal(1)
 
     def test_execute_with_empty_context(self):
         first = FirstAction()

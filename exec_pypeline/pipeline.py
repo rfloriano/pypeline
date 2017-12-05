@@ -77,7 +77,7 @@ class Pipeline(object):
             for action in self._executed:
                 self.backward_action(action, context, exception)
             if self.recovery:
-                self.recovery(context)
+                self.recovery(context, exception)
         return self.actions_to_dict()
 
     def iter_execute(self, context=None):

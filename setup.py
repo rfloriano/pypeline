@@ -20,7 +20,7 @@ tests_require = [
     'yanc',
     'preggy',
     'tox',
-    'ipdb',
+    'ipdb==0.10.2',
     'coveralls',
     'sphinx',
 ]

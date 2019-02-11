@@ -96,3 +96,25 @@ class Pipeline(object):
             for action in self._executed:
                 self.backward_action(action, context, exception)
                 yield action
+
+
+class PipelineUnsafe(Pipeline):
+
+    def execute(self, context=None):
+        if context is None:
+            context = {}
+        exception = None
+        for action in self.action_list:
+            try:
+                self.forward_action(action, context, exception)
+            except Exception, e:
+                exception = e
+                break
+
+        if exception:
+            for action in self._executed:
+                self.backward_action(action, context, exception)
+            if self.recovery:
+                self.recovery(context, exception)
+                raise exception
+        return self.actions_to_dict()

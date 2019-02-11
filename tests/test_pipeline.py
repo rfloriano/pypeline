@@ -2,7 +2,7 @@ from mock import Mock
 from unittest import TestCase
 from preggy import expect
 
-from exec_pypeline import Pipeline
+from exec_pypeline import Pipeline, PipelineUnsafe
 from .pass_action import PassAction
 
 
@@ -219,3 +219,37 @@ class PipelineIterTestCase(TestCase):
         for a in pipe.iter_execute({}):
             result.append(a)
         expect(result).to_equal(pipe.action_list)
+
+
+class PipelineUnsafeTestCase(TestCase):
+
+    def test_execute_raise_exception(self):
+        first = FirstAction()
+        second = SecondAction()
+        third = ThirdAction()
+        boom = BoomAction()
+        first.forward = Mock()
+        second.forward = Mock()
+        third.forward = Mock()
+        first.backward = Mock()
+        second.backward = Mock()
+        boom.backward = Mock()
+        pipe_recovery = Mock()
+        third.backward = Mock()
+        pipe_recovery = Mock()
+        action_list = [first, second, boom, third]
+        pipe = PipelineUnsafe(action_list, recovery=pipe_recovery)
+        with expect.error_to_happen(RuntimeError):
+            expect(pipe.execute()).to_be_an_error()
+        expect(pipe.action_list).to_equal(action_list)
+
+        expect(first.forward.call_count).to_equal(1)
+        expect(second.forward.call_count).to_equal(1)
+        expect(third.forward.call_count).to_equal(0)
+
+        expect(first.backward.call_count).to_equal(1)
+        expect(second.backward.call_count).to_equal(1)
+        expect(boom.backward.call_count).to_equal(1)
+        expect(third.backward.call_count).to_equal(0)
+
+        expect(pipe.recovery.call_count).to_equal(1)

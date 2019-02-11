@@ -9,5 +9,5 @@
 # Copyright (c) 2014 Rafael Floriano da Silva rflorianobr@gmail.com
 
 from exec_pypeline.version import __version__  # NOQA
-from exec_pypeline.pipeline import Pipeline  # NOQA
+from exec_pypeline.pipeline import Pipeline, PipelineUnsafe  # NOQA
 from exec_pypeline.action import Action  # NOQA

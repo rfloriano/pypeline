@@ -62,7 +62,7 @@ class Pipeline(object):
         self.after_backward(action, context)
         self.after_action(action, context, exception)
 
-    def execute(self, context=None):
+    def execute(self, context=None, safe=True):
         if context is None:
             context = {}
         exception = None
@@ -78,6 +78,8 @@ class Pipeline(object):
                 self.backward_action(action, context, exception)
             if self.recovery:
                 self.recovery(context, exception)
+            if not safe:
+                raise exception
         return self.actions_to_dict()
 
     def iter_execute(self, context=None):
@@ -96,25 +98,3 @@ class Pipeline(object):
             for action in self._executed:
                 self.backward_action(action, context, exception)
                 yield action
-
-
-class PipelineUnsafe(Pipeline):
-
-    def execute(self, context=None):
-        if context is None:
-            context = {}
-        exception = None
-        for action in self.action_list:
-            try:
-                self.forward_action(action, context, exception)
-            except Exception, e:
-                exception = e
-                break
-
-        if exception:
-            for action in self._executed:
-                self.backward_action(action, context, exception)
-            if self.recovery:
-                self.recovery(context, exception)
-                raise exception
-        return self.actions_to_dict()

@@ -2,7 +2,7 @@ from mock import Mock
 from unittest import TestCase
 from preggy import expect
 
-from exec_pypeline import Pipeline, PipelineUnsafe
+from exec_pypeline import Pipeline
 from .pass_action import PassAction
 
 
@@ -220,10 +220,7 @@ class PipelineIterTestCase(TestCase):
             result.append(a)
         expect(result).to_equal(pipe.action_list)
 
-
-class PipelineUnsafeTestCase(TestCase):
-
-    def test_execute_raise_exception(self):
+    def test_execute_with_unsafe_should_raise_exception(self):
         first = FirstAction()
         second = SecondAction()
         third = ThirdAction()
@@ -238,9 +235,9 @@ class PipelineUnsafeTestCase(TestCase):
         third.backward = Mock()
         pipe_recovery = Mock()
         action_list = [first, second, boom, third]
-        pipe = PipelineUnsafe(action_list, recovery=pipe_recovery)
+        pipe = Pipeline(action_list, recovery=pipe_recovery)
         with expect.error_to_happen(RuntimeError):
-            expect(pipe.execute()).to_be_an_error()
+            expect(pipe.execute(safe=False)).to_be_an_error()
         expect(pipe.action_list).to_equal(action_list)
 
         expect(first.forward.call_count).to_equal(1)
